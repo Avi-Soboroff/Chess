@@ -1,5 +1,17 @@
 package pieces;
 
-public class Bishop extends ChessPiece {
+import Attributes.PieceColor;
+import Attributes.Position;
 
+public class Bishop extends ChessPiece {
+	public Bishop(Position position, PieceColor pieceColor) {
+		super(position, pieceColor);
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public boolean isValidMove(Position newPos, ChessPiece[][] board) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

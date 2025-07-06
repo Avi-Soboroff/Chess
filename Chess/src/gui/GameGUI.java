@@ -3,16 +3,20 @@ package gui;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import game.ChessBoard;
 import game.ChessTile;
+import pieces.ChessPiece;import pieces.Pawn;
 
 public class GameGUI extends JFrame {
 	private final ChessTile[][] chessSquares = new ChessTile[8][8]; //gives us a full chess board that focuses on each individual square
 	private final ChessGame game = new ChessGame(); //instance of the game that will be shown on the screen
-	
+	private final Map<Class<? extends ChessPiece>, String> gamePieces = new HashMap<>(); //Map to contain the unicode/visual representation of the pieces
 	
 	public GameGUI() {
 		setTitle("My Chess Game"); //gives the game a title
@@ -38,6 +42,18 @@ public class GameGUI extends JFrame {
 				});
 				add(newTile);
 				chessSquares[row][col] = newTile; //adds tile to tile board
+			}
+		}
+		updateScreen();
+	}
+	
+	private void updateScreen() {
+		ChessBoard gameBoard = game.getBoard();
+		for (int row = 0; row < 8; row++) {
+			for (int col = 0; col < 8; col++) {
+				//check every tile and see if there is a piece there
+				ChessTile tile = chessSquares[row][col];
+	            
 			}
 		}
 	}
