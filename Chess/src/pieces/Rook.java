@@ -1,7 +1,7 @@
 package pieces;
 
-import Attributes.PieceColor;
-import Attributes.Position;
+import attributes.PieceColor;
+import attributes.Position;
 
 public class Rook extends ChessPiece {
 	public Rook(Position position, PieceColor pieceColor) {

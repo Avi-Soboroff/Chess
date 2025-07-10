@@ -1,7 +1,7 @@
 package pieces;
 
-import Attributes.PieceColor;
-import Attributes.Position;
+import attributes.PieceColor;
+import attributes.Position;
 
 public abstract class ChessPiece {
 	protected Position position;
@@ -23,8 +23,8 @@ public abstract class ChessPiece {
 	}
 	
 	//sets a new position of the piece
-	public Position setPosition(int row, int col) {
-		return new Position(row, col);
+	public void setPosition(Position position) {
+		this.position = position;
 	}
 	
 	public abstract boolean isValidMove(Position newPos, ChessPiece[][] board);

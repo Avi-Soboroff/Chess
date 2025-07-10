@@ -1,4 +1,4 @@
-package Attributes;
+package attributes;
 
 import java.awt.Color;
 

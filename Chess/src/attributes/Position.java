@@ -1,4 +1,4 @@
-package Attributes;
+package attributes;
 
 public class Position {
 	private int row;

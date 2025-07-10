@@ -1,7 +1,7 @@
 package pieces;
 
-import Attributes.PieceColor;
-import Attributes.Position;
+import attributes.PieceColor;
+import attributes.Position;
 
 public class Knight extends ChessPiece {
 	public Knight(Position position, PieceColor pieceColor) {
