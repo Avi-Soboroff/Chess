@@ -47,4 +47,16 @@ public class ChessBoard {
 			gameBoard[6][col] = new Pawn(new Position(6,col), PieceColor.WHITE);
 		}
 	}
+	
+	//method to move the pieces on the board
+	public void movePiece(Position start, Position end) {
+		//check if the space the piece wants to move is empty and that the piece on the starting spot can do a legal move
+		if (gameBoard[end.getRow()][end.getCol()] == null && gameBoard[start.getRow()][start.getCol()].isValidMove(end, gameBoard)) {
+			//set the end position on the board to the piece occupying the starting spot
+			gameBoard[end.getRow()][end.getCol()] = gameBoard[start.getRow()][start.getCol()];
+			//update the whole board
+			gameBoard[end.getRow()][end.getCol()].setPosition(end); //setting a new position to the recently moved piece
+			gameBoard[start.getRow()][start.getCol()] = null; //setting the starting position to an empty space
+		}
+	}
 }
