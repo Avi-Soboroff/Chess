@@ -59,4 +59,22 @@ public class ChessBoard {
 			gameBoard[start.getRow()][start.getCol()] = null; //setting the starting position to an empty space
 		}
 	}
+	
+	//returns the piece from specific location on the board
+	public ChessPiece getChessPiece(int row, int col) {
+		return gameBoard[row][col];
+	}
+	
+	//getter method for the board
+	public ChessPiece[][] getBoard() {
+		return gameBoard;
+	}
+	
+	//helper method that allows us to set a piece anywhere on the board
+	public void setPiece(int row, int column, ChessPiece piece) {
+		gameBoard[row][column] = piece;
+		if (piece != null) {
+			piece.setPosition(new Position(row, column));
+		}
+	}
 }
