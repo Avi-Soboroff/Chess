@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -9,9 +10,16 @@ import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import attributes.PieceColor;
 import game.ChessBoard;
 import game.ChessTile;
-import pieces.ChessPiece;import pieces.Pawn;
+import pieces.Bishop;
+import pieces.ChessPiece;
+import pieces.King;
+import pieces.Knight;
+import pieces.Pawn;
+import pieces.Queen;
+import pieces.Rook;
 
 public class GameGUI extends JFrame {
 	private final ChessTile[][] chessSquares = new ChessTile[8][8]; //gives us a full chess board that focuses on each individual square
@@ -22,9 +30,20 @@ public class GameGUI extends JFrame {
 		setTitle("My Chess Game"); //gives the game a title
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //immediately exits the game once closed out
 		setLayout(new GridLayout(8,8));
+		putPiecesOnBoard();
 		setUpBoard(); 
 		pack(); //makes sure chess board fits in the window
 		setVisible(true);
+	}
+	
+	//helper method to put the piece on the board
+	private void putPiecesOnBoard() {
+		gamePieces.put(Pawn.class, "♟");
+		gamePieces.put(Rook.class, "♜");
+		gamePieces.put(Knight.class, "♞");
+		gamePieces.put(Bishop.class, "♝");
+		gamePieces.put(Queen.class, "♛");
+		gamePieces.put(King.class, "♚");
 	}
 	
 	//sets up the full 8x8 chess board on the screen
@@ -48,12 +67,18 @@ public class GameGUI extends JFrame {
 	}
 	
 	private void updateScreen() {
-		ChessBoard gameBoard = game.getBoard();
+		ChessBoard board = game.getBoard(); //returns our chess board
 		for (int row = 0; row < 8; row++) {
 			for (int col = 0; col < 8; col++) {
-				//check every tile and see if there is a piece there
-				ChessTile tile = chessSquares[row][col];
-	            
+				ChessPiece piece = board.getChessPiece(row, col);
+				//now check if there is a piece on that spot
+				if (piece != null) {
+					//if there is a piece there, put it on the board
+					String pieceSymbol = gamePieces.get(piece.getClass());
+					Color pieceColor = (piece.getColor() == PieceColor.WHITE ? Color.WHITE : Color.BLACK);
+					//visually place the piece on board 
+					chessSquares[row][col].setPiece(pieceSymbol, pieceColor);
+				}
 			}
 		}
 	}
