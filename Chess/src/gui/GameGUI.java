@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -33,6 +36,7 @@ public class GameGUI extends JFrame {
 		setLayout(new GridLayout(8,8));
 		putPiecesOnBoard();
 		setUpBoard(); 
+		addGameMenus();
 		pack(); //makes sure chess board fits in the window
 		setVisible(true);
 	}
@@ -88,7 +92,8 @@ public class GameGUI extends JFrame {
 	}
 	
 	private void tileSelection(int row, int col) {
-		checkGameState();
+		clearHighlights();
+		updateScreen();
 	}
 	
 	private void checkGameState() {
@@ -97,6 +102,37 @@ public class GameGUI extends JFrame {
 		if (inCheck) {
 			JOptionPane.showMessageDialog(this, playerColor + " is in check!");
 		}
+	}
+	
+	//method that highlights the legal moves for a piece
+	private void highlightMoves() {
+		
+	}
+	
+	//method that sets the board back to normal after highlighting legal moves
+	private void clearHighlights() {
+		for (int row = 0; row < 8; row++) {
+			for (int col = 0; col < 8; col++) {
+				chessSquares[row][col].setBackground((row + col) % 2 == 0 ? Color.LIGHT_GRAY : Color.DARK_GRAY);
+			}
+		}
+	}
+	
+	//method that handles the game menu with options such as resetting the game
+	private void addGameMenus() { //creates visual menu using JMenu
+		JMenuBar menuBar = new JMenuBar();
+		JMenu gameMenu = new JMenu("Game");
+		JMenuItem resetItem = new JMenuItem("Reset");
+		resetItem.addActionListener(e -> resetGame());
+		gameMenu.add(resetItem);
+		menuBar.add(gameMenu);
+		setJMenuBar(menuBar);
+	}
+	
+	//method that visually resets the game
+	private void resetGame() {
+		game.resetGame();
+		updateScreen();
 	}
 	
 	public static void main(String[] args) {
