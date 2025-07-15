@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import attributes.PieceColor;
@@ -56,7 +57,7 @@ public class GameGUI extends JFrame {
 				newTile.addMouseListener(new MouseAdapter() { //allows user to click on each chess square
 					@Override
 					public void mouseClicked(MouseEvent e) {
-						
+						tileSelection(boardRow,boardCol);
 					}
 				});
 				add(newTile);
@@ -79,7 +80,22 @@ public class GameGUI extends JFrame {
 					//visually place the piece on board 
 					chessSquares[row][col].setPiece(pieceSymbol, pieceColor);
 				}
+				else {
+					chessSquares[row][col].clearPiece();
+				}
 			}
+		}
+	}
+	
+	private void tileSelection(int row, int col) {
+		checkGameState();
+	}
+	
+	private void checkGameState() {
+		PieceColor playerColor = game.getTurnsColor();
+		boolean inCheck = game.kingInCheck(playerColor);
+		if (inCheck) {
+			JOptionPane.showMessageDialog(this, playerColor + " is in check!");
 		}
 	}
 	

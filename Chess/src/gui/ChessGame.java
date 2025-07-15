@@ -10,6 +10,7 @@ import pieces.King;
 public class ChessGame {
 	private ChessBoard chessBoard;
 	private boolean whiteTurn = true; //keeps track of which color turn it is
+	private Position selectedSpot;
 	
 	public ChessGame() {
 		chessBoard = new ChessBoard();
@@ -110,5 +111,41 @@ public class ChessGame {
 		chessBoard.setPiece(startRow, startCol, chessBoard.getChessPiece(endRow, endCol));
 		chessBoard.setPiece(endRow, endCol, tempMove);
 		return stillInCheck;
+	}
+	
+	//method to restart a game of chess
+	public void resetGame() {
+		this.chessBoard = new ChessBoard();
+		this.whiteTurn = true;
+	}
+	
+	//method to return the current turn's color
+	public PieceColor getTurnsColor() {
+		return whiteTurn ? PieceColor.WHITE : PieceColor.BLACK;
+	}
+	
+	//method that returns true if there is a piece on that selected spot
+	public boolean isPieceSelected() {
+		return selectedSpot != null;
+	}
+	
+	public boolean handleSelection(int row, int col) {
+		//first, check if a spot has already been selected
+		if (selectedSpot == null) {
+			//if a spot hasn't been selected, check if there is a piece there
+			ChessPiece selectedPiece = chessBoard.getChessPiece(row, col);
+			if (selectedPiece != null && selectedPiece.getColor() == (whiteTurn ? PieceColor.WHITE : PieceColor.BLACK)) {
+				//if there is a piece occupying that spot and it is that player's turn then select that spot but don't move the piece
+				selectedSpot = new Position(row,col);
+				return false;
+			}
+			else { //if a spot was selected already
+				//see if a legal move can be made from that spot
+				boolean legalMove = makeMove(selectedSpot, new Position(row,col));
+				selectedSpot = null; //undo selection whether or not move is legal
+				return legalMove;
+			}
+		}
+		return false;
 	}
 }

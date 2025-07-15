@@ -42,4 +42,8 @@ public class ChessTile extends JButton {
 		this.setText(pieceSymbol);
 		this.setForeground(pieceColor);
 	}
+	
+	public void clearPiece() {
+		this.setText("");
+	}
 }
