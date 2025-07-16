@@ -162,6 +162,7 @@ public class GameGUI extends JFrame {
 	
 	//method that visually resets the game
 	private void resetGame() {
+		clearHighlights();
 		game.resetGame();
 		updateScreen();
 	}

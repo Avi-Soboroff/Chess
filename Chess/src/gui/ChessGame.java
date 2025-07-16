@@ -147,12 +147,12 @@ public class ChessGame {
 				selectedSpot = new Position(row,col);
 				return false;
 			}
-			else { //if a spot was selected already
-				//see if a legal move can be made from that spot
-				boolean legalMove = makeMove(selectedSpot, new Position(row,col));
-				selectedSpot = null; //undo selection whether or not move is legal
-				return legalMove;
-			}
+		}
+		else { //if a spot was selected already
+			//see if a legal move can be made from that spot
+			boolean legalMove = makeMove(selectedSpot, new Position(row,col));
+			selectedSpot = null; //undo selection whether or not move is legal
+			return legalMove;
 		}
 		return false;
 	}
@@ -169,24 +169,101 @@ public class ChessGame {
 			pawnMoves(piecePosition, myPiece.getColor(), legalMoves);
 		}
 		else if (myPiece instanceof King) {
-			
+			kingAndKnightMoves(piecePosition, new int[][] {{1,0}, {1,1}, {0,1}, {-1,1}, {-1,0}, {-1,-1}, {-1,0}, {1,-1}},
+					myPiece.getColor(), legalMoves);
 		}
 		else if (myPiece instanceof Knight) {
-			
+			kingAndKnightMoves(piecePosition, new int[][] {{2,1}, {2,-1}, {-2,1}, {-2,-1}, {1,2}, {1,-2}, {-1,2}, {-1,-2}},
+					myPiece.getColor(), legalMoves);
 		}
 		else if (myPiece instanceof Rook) {
-			
+			rookBishopQueenMoves(piecePosition, new int[][] {{1,0}, {0,1}, {-1,0}, {0,-1}}, myPiece.getColor(), legalMoves);
 		}
 		else if (myPiece instanceof Bishop) {
-			
+			rookBishopQueenMoves(piecePosition, new int[][] {{1,1}, {-1,1}, {-1,-1}, {1,-1}}, myPiece.getColor(), legalMoves);
 		}
 		else if (myPiece instanceof Queen) {
-			
+			rookBishopQueenMoves(piecePosition, new int[][] {{1,0}, {1,1}, {0,1}, {-1,1}, {-1,0}, {-1,-1}, {0,-1}, {1,-1}},
+					myPiece.getColor(), legalMoves);
 		}
 		return legalMoves;
 	}
 	
+	//method to make sure we don't go out-of-bounds
+	private boolean isPosValid(Position endPos) {
+		if (endPos.getRow() < 0 || endPos.getRow() >= 8 || endPos.getCol() < 0 || endPos.getCol() >= 8) {
+			return false;
+		}
+		return true;
+	}
+	
+	//method that gets all legal pawn moves
 	private void pawnMoves(Position selectedPosition, PieceColor pawnColor, List<Position> legalMoves) {
-		
+		//find out which direction the pawn has to go(using its color)
+		int direction = pawnColor == PieceColor.WHITE ? -1 : 1;
+		int destRow = selectedPosition.getRow();
+		int destCol = selectedPosition.getCol();
+		//start with showing all the legal single moves that pawns can do
+		Position endPos = new Position(destRow + direction, destCol);
+		if (isPosValid(endPos) && chessBoard.getChessPiece(endPos.getRow(), endPos.getCol()) == null) {
+			legalMoves.add(endPos);
+		}
+		//now factor in a pawn starting move where it can move two spaces ahead
+		if ((pawnColor == PieceColor.WHITE && selectedPosition.getRow() == 6) || 
+				(pawnColor == PieceColor.BLACK && selectedPosition.getCol() == 1)) {
+			endPos = new Position(destRow + 2 * direction, destCol);
+			Position midPos = new Position(destRow + direction, destCol);
+			if (isPosValid(midPos) && chessBoard.getChessPiece(midPos.getRow(), midPos.getCol()) == null) {
+				if (isPosValid(endPos) && chessBoard.getChessPiece(endPos.getRow(), endPos.getCol()) == null) {
+					legalMoves.add(endPos);
+				}
+			}
+		}
+		//now handle possible capture moves
+		int[] possCols = {destRow-1,destRow+1};
+		for (int col: possCols) {
+			endPos = new Position(destRow + direction, col);
+			if (isPosValid(endPos) && chessBoard.getChessPiece(endPos.getRow(), endPos.getCol()) != null 
+					&& chessBoard.getChessPiece(endPos.getRow(), endPos.getCol()).getColor() != pawnColor) {
+				legalMoves.add(endPos);
+			}
+		}
+	}
+	
+	//method for all legal knight and king moves
+	private void kingAndKnightMoves(Position selectedPosition, int[][] coordinates, PieceColor pieceColor, List<Position> legalMoves) {
+		int destRow = selectedPosition.getRow();
+		int destCol = selectedPosition.getCol();
+		//loop through every coordinate row and see if that spot is empty or can capture a piece
+		for (int[] coord: coordinates) {
+			Position endPos = new Position(destRow + coord[0], destCol + coord[1]);
+			if (isPosValid(endPos) && (chessBoard.getChessPiece(endPos.getRow(), endPos.getCol()) == null 
+					|| chessBoard.getChessPiece(endPos.getRow(), endPos.getCol()).getColor() != pieceColor)) {
+				legalMoves.add(endPos);
+			}
+		}
+	}
+	
+	//method for all legal rook, bishop, and queen moves
+	private void rookBishopQueenMoves(Position selectedPosition, int[][] directions, PieceColor pieceColor, List<Position> legalMoves) {
+		int destRow = selectedPosition.getRow();
+		int destCol = selectedPosition.getCol();
+		//loop through every possible direction
+		for (int[] path: directions) {
+			Position endPos = new Position(destRow + path[0], destCol + path[1]);
+			while (isPosValid(endPos)) { //while the end position exists on the board
+				if (chessBoard.getChessPiece(endPos.getRow(), endPos.getCol()) == null) {
+					legalMoves.add(endPos);
+					//update the end position
+					endPos = new Position(endPos.getRow() + path[0], endPos.getCol() + path[1]);
+				}
+				else {
+					if (chessBoard.getChessPiece(endPos.getRow(), endPos.getCol()).getColor() != pieceColor) {
+						legalMoves.add(endPos);
+					}
+					break;
+				}
+			}
+		}
 	}
 }
