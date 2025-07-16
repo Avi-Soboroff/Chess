@@ -1,10 +1,18 @@
 package gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import attributes.PieceColor;
 import attributes.Position;
 import game.ChessBoard;
+import pieces.Bishop;
 import pieces.ChessPiece;
 import pieces.King;
+import pieces.Knight;
+import pieces.Pawn;
+import pieces.Queen;
+import pieces.Rook;
 
 //this class is the game logic. This will take the gameboard and pieces, and deal with all the movements, captures, checks, and checkmates
 public class ChessGame {
@@ -147,5 +155,38 @@ public class ChessGame {
 			}
 		}
 		return false;
+	}
+	
+	//method that will highlight the legal moves for every piece at any time in the game
+	public List<Position> getAllLegalMovesForChessPiece(Position piecePosition) {
+		//first, find the piece you want to move
+		int pieceRow = piecePosition.getRow();
+		int pieceCol = piecePosition.getCol();
+		ChessPiece myPiece = chessBoard.getChessPiece(pieceRow, pieceCol);
+		if (myPiece == null) {return new ArrayList<>();} //return empty array list if no piece exists at the position
+		List<Position> legalMoves = new ArrayList<Position>(); //create list to store positions
+		if (myPiece instanceof Pawn) {
+			pawnMoves(piecePosition, myPiece.getColor(), legalMoves);
+		}
+		else if (myPiece instanceof King) {
+			
+		}
+		else if (myPiece instanceof Knight) {
+			
+		}
+		else if (myPiece instanceof Rook) {
+			
+		}
+		else if (myPiece instanceof Bishop) {
+			
+		}
+		else if (myPiece instanceof Queen) {
+			
+		}
+		return legalMoves;
+	}
+	
+	private void pawnMoves(Position selectedPosition, PieceColor pawnColor, List<Position> legalMoves) {
+		
 	}
 }

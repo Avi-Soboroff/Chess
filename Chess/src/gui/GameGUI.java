@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JFrame;
@@ -15,6 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import attributes.PieceColor;
+import attributes.Position;
 import game.ChessBoard;
 import game.ChessTile;
 import pieces.Bishop;
@@ -92,7 +94,18 @@ public class GameGUI extends JFrame {
 	}
 	
 	private void tileSelection(int row, int col) {
+		boolean selectedTileMove = game.handleSelection(row, col);
 		clearHighlights();
+		//if a tile is selected and piece is moved, update the board with no highlights of new legal moves
+		if (selectedTileMove) {
+			updateScreen();
+			checkGameState();
+			checkIfGameOver();
+		}
+		else if (game.isPieceSelected()) {
+			//if a piece is selected but hasn't moved, then highlight the legal moves it can do
+			highlightMoves(new Position(row,col));
+		}
 		updateScreen();
 	}
 	
@@ -104,9 +117,27 @@ public class GameGUI extends JFrame {
 		}
 	}
 	
+	private void checkIfGameOver() {
+		//if one player is in checkmate
+		if (game.isGameOver(game.getTurnsColor())) {
+			//gives the user a yes or no option if they want to play again
+			int response = JOptionPane.showConfirmDialog(this, "Checkmate! You Lost Womp Womp!! Play again?", "Game Over",
+		              JOptionPane.YES_NO_OPTION); 
+			if (response == JOptionPane.YES_OPTION) {
+				resetGame();
+			}
+			else {
+				System.exit(0);
+			}
+		}
+	}
+	
 	//method that highlights the legal moves for a piece
-	private void highlightMoves() {
-		
+	private void highlightMoves(Position piecePosition) {
+		List<Position> legalMoves = game.getAllLegalMovesForChessPiece(piecePosition);
+		for (Position legalMove: legalMoves) {
+			chessSquares[legalMove.getRow()][legalMove.getCol()].setBackground(Color.BLUE);
+		}
 	}
 	
 	//method that sets the board back to normal after highlighting legal moves
